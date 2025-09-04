@@ -1,8 +1,6 @@
 import pytest
 from pytest_bdd import scenarios, scenario, given, when, then, parsers
 
-# scenario = partial(scenario, "../features/itinerary.feature")
-
 
 @scenario("../features/itinerary.feature", "When I launch the app, I can start an itinerary")
 def test_itinerary():
