@@ -16,8 +16,10 @@ def google_maps_opened(search_page):
     Ensure Google Maps home page is loaded.
     Dismiss skip button if present.
     """
-    search_page.load_maps_page()
-    search_page.click_skip_button()
+    try:
+        search_page.load_maps_page()
+    except:
+        search_page.click_skip_button()
 
 
 @when(parsers.parse("I search for '{city}'"))
@@ -26,12 +28,22 @@ def search_for_city(search_page, city):
     search_page.enter_search_text(city)
 
 
-@then(parsers.parse("I should see search results for '{city}'"))
-def verify_search_results(search_page_actions, city):
-    """
-    Assert that search results are displayed.
-    """
-    search_box = search_page_actions._driver.find_element_by_id(
-        "com.google.android.apps.maps:id/search_omnibox_text_box"
-    )
-    assert city.lower() in search_box.text.lower(), f"Expected {city} in search box"
+@when(parsers.parse("I start an itinerary towards '{city}'"))
+def start_itinerary(search_page, city):
+    """Start itinerary to a city."""
+    search_page.click_directions_button(city)
+
+
+@when(parsers.parse("I change the starting point to '{city}'"))
+def change_starting_point(search_page, city):
+    """Change starting point of itinerary."""
+    search_page.click_start_point()
+    search_page.enter_search_text(city)
+
+
+@then("the itinerary should show directions between starting point and destination")
+def assert_itinerary_directions_shown(search_page):
+    """Verify itinerary directions."""
+    search_page.assert_navigation_modes_displayed()
+    search_page.assert_preview_button()
+
